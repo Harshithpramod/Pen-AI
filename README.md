@@ -79,22 +79,11 @@ GEMINI_API_KEY=<key>           # fallback for local dev
 SANDBOX_URL=https://sandbox.example.com
 SANDBOX_API_TOKEN=<openssl rand -hex 32>
 CALLBACK_HMAC_SECRET=<openssl rand -hex 32>
-```
-
-`.env` is gitignored. Never commit it — the service role key bypasses every
-RLS policy in the database.
-
-Apply the migrations in `supabase/migrations/` in filename order, either with
-the CLI or by pasting them into the Supabase SQL editor:
 
 ```bash
 supabase link --project-ref <project-ref>
 supabase db push
 ```
-
-If earlier migrations were applied by hand, `db push` will try to replay them
-and fail. Check `supabase migration list` first; to apply a single file
-without touching migration history:
 
 ```bash
 supabase db query --linked -f supabase/migrations/<file>.sql
@@ -169,7 +158,4 @@ docs/DESIGN-SYSTEM.md        design tokens and the measurements behind them
 - API keys can be created in Settings but nothing consumes them yet — there is
   no endpoint that authenticates with a `pta_` key.
 
-## License
 
-No license file. All rights reserved by default — add one before making the
-repository public if you intend to allow reuse.
