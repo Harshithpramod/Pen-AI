@@ -1,0 +1,30 @@
+{$SANDBOX_HOSTNAME} {
+    encode zstd gzip
+
+    # Basic hardening
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+        -Server
+    }
+
+    # Only expose the API. Everything else (worker, redis) stays internal.
+    # A bare reverse_proxy /api/* directive left every other path unmatched,
+    # which Caddy answers with an empty 200 rather than 404 — a working probe
+    # target that also leaks "Server: Caddy" (the -Server removal above only
+    # covers requests this site block actually handles). handle/handle blocks
+    # make the routing exhaustive so every path gets a real response.
+    handle /api/* {
+        reverse_proxy api:8080
+    }
+
+    handle {
+        respond 404
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}

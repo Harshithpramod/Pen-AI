@@ -1,0 +1,11 @@
+{
+  "name": "pentestai-sandbox-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "fastify": "^4.28.1",
+    "ioredis": "^5.4.1",
+    "zod": "^3.23.8"
+  }
+}

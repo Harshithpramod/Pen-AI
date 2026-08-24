@@ -1,0 +1,102 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SANDBOX_HOSTNAME: ${SANDBOX_HOSTNAME}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+    depends_on:
+      - api
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    # No direct host port publish — caddy is the only internet-facing entrypoint.
+    # api is reachable at api:8080 from caddy over the shared `edge` network.
+    environment:
+      REDIS_URL: redis://redis:6379
+      SANDBOX_API_TOKEN: ${SANDBOX_API_TOKEN}
+      CALLBACK_HMAC_SECRET: ${CALLBACK_HMAC_SECRET}
+      PENTESTAI_CALLBACK_URL: ${PENTESTAI_CALLBACK_URL}
+      MAX_JOB_SECONDS: "600"
+    networks:
+      - edge
+      - internal
+    depends_on:
+      - redis
+
+  worker:
+    build: ./worker
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      REDIS_URL: redis://redis:6379
+      RUNNER_IMAGE: pentestai/runner:latest
+      RUNNER_NETWORK: pentestai-sandbox_runner_net
+      # CodeQL (database create + security-extended analyze) needs more
+      # headroom than the semgrep-only runner did. Raise further for large
+      # monorepos; lower only if every job you see is falling back to semgrep
+      # (unsupported language) anyway.
+      RUNNER_CPU: "2.0"
+      RUNNER_MEMORY: "3g"
+      RUNNER_TMPFS_SIZE: "2g"
+      RUNNER_PIDS: "512"
+      RUNNER_TIMEOUT_SECONDS: "1200"
+      ARTIFACTS_DIR: /artifacts
+      ARTIFACTS_VOLUME: pentestai_artifacts
+      PENTESTAI_CALLBACK_URL: ${PENTESTAI_CALLBACK_URL}
+      CALLBACK_HMAC_SECRET: ${CALLBACK_HMAC_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - artifacts:/artifacts
+    networks:
+      - edge
+      - internal
+      - runner_net
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+
+networks:
+  edge:
+    driver: bridge
+
+  internal:
+    driver: bridge
+    internal: true
+
+  runner_net:
+    driver: bridge
+    internal: true
+    name: pentestai-sandbox_runner_net
+
+volumes:
+  redis_data:
+  artifacts:
+    name: pentestai_artifacts
+  caddy_data:
+  caddy_config:

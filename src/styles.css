@@ -1,0 +1,305 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+
+  /* Severity */
+  --color-critical: var(--critical);
+  --color-high: var(--high);
+  --color-medium: var(--medium);
+  --color-low: var(--low);
+
+  /* Severity/status foregrounds for use *on a 15% tint of the same hue*.
+     The base colours above are correct for fills, bars and icons, but as
+     text on their own tint they measure 2.85–4.12:1 — below AA. These were
+     picked by computing against the composited tint over both the page and
+     card surfaces; every one clears 4.5:1 on both. See docs/DESIGN-SYSTEM.md. */
+  --color-critical-fg: var(--critical-fg);
+  --color-high-fg: var(--high-fg);
+  --color-medium-fg: var(--medium-fg);
+  --color-low-fg: var(--low-fg);
+  --color-accent-fg: var(--accent-fg);
+  --color-primary-strong: var(--primary-strong);
+
+  /* Status */
+  --color-status-secure: var(--status-secure);
+  --color-status-progress: var(--status-progress);
+  --color-status-queued: var(--status-queued);
+  --color-status-failed: var(--status-failed);
+  --color-status-vulnerable: var(--status-vulnerable);
+
+  /* Marketing */
+  --color-marketing-bg: var(--marketing-bg);
+  --color-marketing-card: var(--marketing-card);
+  --color-marketing-border: var(--marketing-border);
+  --color-marketing-muted: var(--marketing-muted);
+
+  /* Marketing/landing design system (see docs/DESIGN-SYSTEM.md).
+     Scoped to the landing + auth surfaces so the authenticated app's
+     tokens above stay untouched. */
+  --color-landing-bg: var(--landing-bg);
+  --color-landing-surface: var(--landing-surface);
+  --color-landing-surface-2: var(--landing-surface-2);
+  --color-landing-border: var(--landing-border);
+  --color-landing-border-strong: var(--landing-border-strong);
+  --color-landing-fg: var(--landing-fg);
+  --color-landing-fg-secondary: var(--landing-fg-secondary);
+  --color-landing-fg-muted: var(--landing-fg-muted);
+  --color-landing-primary: var(--landing-primary);
+  --color-landing-primary-hover: var(--landing-primary-hover);
+  --color-landing-accent: var(--landing-accent);
+
+  /* App body font stays Inter so the authenticated UI is unchanged — this
+     redesign is scoped to the marketing surfaces. The landing page opts into
+     font-body/font-display explicitly on its root element. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  /* JetBrains Mono was already being fetched in the document head but never
+     mapped to a token, so font-mono silently fell back to the generic stack. */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Dark-mode-first: default tokens are the app dark theme. */
+:root {
+  --radius: 0.5rem;
+
+  /* App surface (dark security console) */
+  --background: oklch(0.208 0.043 265); /* #0F172A slate-900 */
+  --foreground: oklch(0.965 0.006 247); /* #F1F5F9 */
+  --card: oklch(0.279 0.041 260); /* #1E293B slate-800 */
+  --card-foreground: oklch(0.965 0.006 247);
+  --popover: oklch(0.279 0.041 260);
+  --popover-foreground: oklch(0.965 0.006 247);
+
+  --primary: oklch(0.606 0.25 292); /* #8B5CF6 violet-500 */
+  --primary-foreground: oklch(0.985 0 0);
+  --primary-hover: oklch(0.541 0.253 293); /* #7C3AED violet-600 */
+
+  --secondary: oklch(0.372 0.038 258);
+  --secondary-foreground: oklch(0.965 0.006 247);
+  --muted: oklch(0.279 0.041 260);
+  --muted-foreground: oklch(0.704 0.033 256); /* #94A3B8 slate-400 */
+  --accent: oklch(0.372 0.038 258);
+  --accent-foreground: oklch(0.965 0.006 247);
+
+  --destructive: oklch(0.637 0.237 25); /* #EF4444 */
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --border: oklch(0.418 0.036 258); /* #334155 slate-700 */
+  --input: oklch(0.418 0.036 258);
+  --ring: oklch(0.606 0.25 292);
+
+  --sidebar: oklch(0.229 0.043 265); /* #111827 gray-900 */
+  --sidebar-foreground: oklch(0.965 0.006 247);
+  --sidebar-border: oklch(0.372 0.038 258);
+  --sidebar-accent: oklch(0.279 0.041 260);
+
+  /* Severity palette (fills, bars, icons) */
+  --critical: oklch(0.637 0.237 25); /* #EF4444 */
+  --high: oklch(0.72 0.19 55); /* #F97316 */
+  --medium: oklch(0.83 0.17 90); /* #EAB308 */
+  --low: oklch(0.75 0.185 145); /* #22C55E */
+
+  /* Text-on-tint foregrounds. Measured against the 15% tint of the matching
+     hue over card (#1E293B) and page (#0F172A):
+       critical 6.75 / 8.16 · high 7.10 / 8.71 · medium 8.23 / 10.32
+       low 8.02 / 9.90 · accent 6.72 / 8.23
+     The un-lightened bases measured 2.85–4.12 in the same position. */
+  --critical-fg: #fca5a5;
+  --high-fg: #fdba74;
+  --medium-fg: #fde047;
+  --low-fg: #86efac;
+  /* Violet that stays legible as a link or badge on card/page surfaces
+     (5.38 / 6.56); the base --primary reads 3.45 / 4.22 there. */
+  --accent-fg: #a78bfa;
+  /* Button fill that clears AA with a white label (5.70); --primary is 4.23. */
+  --primary-strong: #7c3aed;
+
+  /* Status */
+  --status-secure: oklch(0.75 0.185 145);
+  --status-progress: oklch(0.66 0.2 296);
+  --status-queued: oklch(0.83 0.15 85);
+  --status-failed: oklch(0.637 0.237 25);
+  --status-vulnerable: oklch(0.637 0.237 25);
+
+  /* Marketing/landing (legacy tokens — kept so /auth keeps rendering) */
+  --marketing-bg: oklch(0.145 0 0); /* #0A0A0A */
+  --marketing-card: oklch(0.19 0 0); /* #111111 */
+  --marketing-border: oklch(0.28 0 0); /* #262626 */
+  --marketing-muted: oklch(0.71 0.006 285); /* #A1A1AA */
+
+  /* Landing design system. Hex values are the verified source of truth —
+     see the contrast table in docs/DESIGN-SYSTEM.md. */
+  --landing-bg: #0a0a0f;
+  --landing-surface: #121218;
+  --landing-surface-2: #17171f;
+  --landing-border: #24242f;
+  --landing-border-strong: #33334a;
+  --landing-fg: #f5f5f8;
+  --landing-fg-secondary: #a8a8ba; /* 8.44:1 on bg */
+  --landing-fg-muted: #83839a; /* 5.34:1 on bg */
+  /* Two primaries by necessity: #7C3AED gives white labels 5.70:1 on a filled
+     button, while #A78BFA gives 7.26:1 as accent text on the dark base. The
+     app's #8B5CF6 fails AA for white button text (4.23:1), so it is not reused
+     here. */
+  --landing-primary: #7c3aed;
+  --landing-primary-hover: #6d28d9;
+  --landing-accent: #a78bfa;
+
+  --chart-1: var(--critical);
+  --chart-2: var(--high);
+  --chart-3: var(--medium);
+  --chart-4: var(--low);
+  --chart-5: oklch(0.66 0.2 296);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    /* Anchor jumps (the #features / #how / #coverage nav) glide instead of
+       teleporting. Overridden back to auto under prefers-reduced-motion
+       below. scroll-padding-top keeps the target clear of the 4rem sticky
+       header — without it a section lands underneath the nav. */
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  html,
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Global motion policy. Users who ask for reduced motion get the static
+     final state, not a faster animation. Covers CSS keyframes, transitions,
+     and smooth scrolling; JS-driven motion is handled separately via
+     motion's useReducedMotion() on the landing page. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------
+   Landing utilities. The previous set (aurora, text-gradient,
+   marquee-track, float-slow, scan-line) drove the "animate everything"
+   look and has been removed — see the Motion section of
+   docs/DESIGN-SYSTEM.md. What remains is one static grid and one
+   static glow.
+   --------------------------------------------------------------- */
+
+/* Faint blueprint grid behind the hero. Static — no animation. */
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Large violet bloom rising from the bottom-centre of the section, the way
+   the reference lights its hero: one wide diffuse light source behind the
+   content that bleeds up to the section divider. Three stacked ellipses —
+   a bright core, a wide falloff, and a cool accent wash — give it a softer
+   gradient than a single radial can. Static; nothing pulses. */
+@utility landing-glow {
+  background:
+    /* Cores sit below the copy block on purpose: measured against rendered
+       pixels, a brighter core level with the hero text dropped muted body
+       copy to 3.1:1. Keeping the light low preserves the look and holds AA. */
+    radial-gradient(
+      40rem 15rem at 50% 106%,
+      color-mix(in oklab, var(--color-landing-accent) 44%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      62rem 25rem at 50% 102%,
+      color-mix(in oklab, var(--color-landing-primary) 60%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      90rem 40rem at 50% 97%,
+      color-mix(in oklab, var(--color-landing-primary) 28%, transparent),
+      transparent 74%
+    );
+}
+
+/* Bright seam where the lit section meets the next one — the glow reads as
+   light spilling over the boundary rather than stopping at a hard edge. */
+@utility glow-seam {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--color-landing-accent) 22%, transparent) 28%,
+    color-mix(in oklab, var(--color-landing-accent) 62%, transparent) 50%,
+    color-mix(in oklab, var(--color-landing-accent) 22%, transparent) 72%,
+    transparent
+  );
+}
+
+/* Hairline divider that fades out at both ends. */
+@utility rule-fade {
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-landing-border-strong) 18%,
+    var(--color-landing-border-strong) 82%,
+    transparent
+  );
+}
+
+/* Shared focus ring for landing controls. Never remove the outline —
+   swap it for a visible ring. */
+@utility focus-ring {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-landing-accent);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+}
